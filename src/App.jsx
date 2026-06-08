@@ -3,8 +3,20 @@ import ToDo from "./Todo";
 import Act from "./Actor";
 import Bk from "./Books";
 import Counter from "./counter";
+import Users from "./Users";
+import { Suspense } from "react";
+import NewUsers from "./NewUsers";
 
+const userPromise = fetch("https://jsonplaceholder.typicode.com/users").then(
+  (res) => res.json(),
+);
+
+const newUserPromise = async () => {
+  const res = await fetch("./Users.json");
+  return res.json();
+};
 function App() {
+  const getUsers = newUserPromise();
   function handleClick() {
     alert("I am clicked");
   }
@@ -20,8 +32,14 @@ function App() {
   ];
   return (
     <>
-      <h1>Vite & React</h1>
+      <h1>Vite & React Project</h1>
       <Counter></Counter>
+      <Suspense fallback={<p>Loading...</p>}>
+        <Users userPromise={userPromise}></Users>
+      </Suspense>
+      <Suspense fallback={<p>Loading....</p>}>
+        <NewUsers getUsers={getUsers}></NewUsers>
+      </Suspense>
       <ToDo task="learn React"></ToDo>
       <Show name="Ziad" tech="js" income="40k"></Show>
       <Show name="Hasib" tech="next.js"></Show>
